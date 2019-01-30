@@ -13,26 +13,53 @@ class App extends Component {
     work: 'Remote'
   }
 
-  switchNameHandler = () => {
+  switchNameHandler = (newName) => {
     this.setState({
       persons: [
         { name: 'Insight', age: 500 },
         { name: 'BitBucket', age: 28 },
-        { name: 'Redis', age: 40 }
+        { name: newName, age: 40 }
+      ]
+    })
+  }
+
+  changeNameHandler = (event) => {
+    this.setState({
+      persons: [
+        { name: event.target.value, age: 500 },
+        { name: 'Test2', age: 28 },
+        { name: 'Test3', age: 40 }
       ]
     })
   }
 
   render() {
+
+    const style = {
+      backgroundColor: 'white',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer'
+    }
+
+
     return (
-      <div className="App">
+      <div className="App" >
         <h1>Hi, I am react create app!!</h1>
         <h1>This is really working!!</h1>
 
-        <button onClick={this.switchNameHandler}>Switch name</button>
-        <button onClick={() => this.switchNameHandler()}>Switch name</button>
+        <button style={style} onClick={this.switchNameHandler.bind(this, 'New Name')}>Switch name</button>
+        <button onClick={() => this.switchNameHandler('Please')}>Switch name</button>
 
-        {this.state.persons.map(person => <Person key={person.name} name={person.name} age={person.age}></Person>)}
+        {this.state.persons.map(person =>
+          <Person
+            key={person.name}
+            name={person.name}
+            age={person.age}
+            click={this.switchNameHandler.bind(this, person.age)}
+            changed={this.changeNameHandler}
+          >
+          </Person>)}
 
       </div>
 
