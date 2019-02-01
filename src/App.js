@@ -6,9 +6,9 @@ class App extends Component {
 
   state = {
     persons: [
-      { name: 'Rahul', age: 24 },
-      { name: 'Bruce', age: 28 },
-      { name: 'Cyrus', age: 40 }
+      { id: "1", name: 'Rahul', age: 24 },
+      { id: "2", name: 'Bruce', age: 28 },
+      { id: "3", name: 'Cyrus', age: 40 }
     ],
     work: 'Remote'
   }
@@ -19,17 +19,42 @@ class App extends Component {
         { name: 'Insight', age: 500 },
         { name: 'BitBucket', age: 28 },
         { name: newName, age: 40 }
-      ]
+      ],
+      showPerson: false
     })
   }
 
-  changeNameHandler = (event) => {
+  changeNameHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    person.name = event.target.value;
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
     this.setState({
-      persons: [
-        { name: event.target.value, age: 500 },
-        { name: 'Test2', age: 28 },
-        { name: 'Test3', age: 40 }
-      ]
+      persons: persons
+    })
+  }
+
+  deletePersonHandler = (index) => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons];
+    persons.splice(index, 1)
+    this.setState({
+      persons: persons
+    })
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPerson
+    this.setState({
+      showPerson: !doesShow
     })
   }
 
@@ -40,6 +65,25 @@ class App extends Component {
       border: '1px solid blue',
       padding: '8px',
       cursor: 'pointer'
+    };
+
+    let persons = null;
+
+    if (this.state.showPerson) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) =>
+            <Person
+              key={person.id}
+              name={person.name}
+              age={person.age}
+              // click={this.switchNameHandler.bind(this, person.age)}
+              click={() => this.deletePersonHandler(index)}
+              changed={(event) => this.changeNameHandler(event, person.id)}
+            >
+            </Person>)}
+        </div>
+      );
     }
 
 
@@ -48,19 +92,11 @@ class App extends Component {
         <h1>Hi, I am react create app!!</h1>
         <h1>This is really working!!</h1>
 
-        <button style={style} onClick={this.switchNameHandler.bind(this, 'New Name')}>Switch name</button>
-        <button onClick={() => this.switchNameHandler('Please')}>Switch name</button>
+        {/* <button style={style} onClick={this.switchNameHandler.bind(this, 'New Name')}>Switch name</button> */}
+        {/* <button onClick={() => this.switchNameHandler('Please')}>Switch name</button> */}
+        <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
 
-        {this.state.persons.map(person =>
-          <Person
-            key={person.name}
-            name={person.name}
-            age={person.age}
-            click={this.switchNameHandler.bind(this, person.age)}
-            changed={this.changeNameHandler}
-          >
-          </Person>)}
-
+        {persons}
       </div>
 
       // React.createElement('div', { className: 'App' },
